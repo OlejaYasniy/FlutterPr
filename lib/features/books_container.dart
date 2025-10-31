@@ -24,10 +24,12 @@ class _BooksContainerState extends State<BooksContainer> {
       _currentScreen = Screen.form;
     });
   }
+
   void _createBook({
     required String title,
     required String author,
     String description = "",
+    String? coverUrl,
   }) {
     final newBook = Book(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -36,6 +38,7 @@ class _BooksContainerState extends State<BooksContainer> {
       description: description,
       createdAt: DateTime.now(),
       isRead: false,
+      coverUrl: coverUrl,
     );
 
     setState(() {
@@ -83,6 +86,7 @@ class _BooksContainerState extends State<BooksContainer> {
       ),
     );
   }
+
   void _undoDelete() {
     if (_lastDeletedBook != null && _lastDeletedIndex != null) {
       setState(() {
@@ -124,11 +128,13 @@ class _BooksContainerState extends State<BooksContainer> {
             required String title,
             required String author,
             String description = "",
+            String? coverUrl,
           }) {
             _createBook(
               title: title,
               author: author,
               description: description,
+              coverUrl: coverUrl,
             );
           },
         );

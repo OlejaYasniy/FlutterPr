@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../book.dart';
+import '../widgets/book_cover.dart';
 
 class BookListScreen extends StatelessWidget {
   final List<Book> books;
   final VoidCallback onAddBook;
   final ValueChanged<String> onToggleBook;
   final ValueChanged<String> onDeleteBook;
+
   const BookListScreen({
     Key? key,
     required this.books,
@@ -13,6 +15,7 @@ class BookListScreen extends StatelessWidget {
     required this.onToggleBook,
     required this.onDeleteBook,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,30 +114,17 @@ class BookListScreen extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
               contentPadding: const EdgeInsets.all(16),
-              leading: Container(
+              leading: BookCover(
+                coverUrl: book.coverUrl,
                 width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: book.isRead
-                      ? Colors.green.shade100
-                      : Colors.orange.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  book.isRead ? Icons.check_circle : Icons.schedule,
-                  color: book.isRead
-                      ? Colors.green.shade700
-                      : Colors.orange.shade700,
-                  size: 32,
-                ),
+                height: 80,
               ),
               title: Text(
                 book.title,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  decoration:
-                  book.isRead ? TextDecoration.lineThrough : null,
+                  decoration: book.isRead ? TextDecoration.lineThrough : null,
                   color: book.isRead ? Colors.grey.shade600 : Colors.black87,
                 ),
               ),

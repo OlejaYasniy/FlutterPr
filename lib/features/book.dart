@@ -1,5 +1,3 @@
-// lib/book.dart
-
 class Book {
   final String id;
   final String title;
@@ -7,6 +5,7 @@ class Book {
   final String description;
   final DateTime createdAt;
   final bool isRead;
+  final String? coverUrl;
 
   Book({
     required this.id,
@@ -15,6 +14,7 @@ class Book {
     this.description = "",
     required this.createdAt,
     this.isRead = false,
+    this.coverUrl,
   });
 
   Book copyWith({
@@ -24,6 +24,7 @@ class Book {
     String? description,
     DateTime? createdAt,
     bool? isRead,
+    String? coverUrl,
   }) {
     return Book(
       id: id ?? this.id,
@@ -32,6 +33,7 @@ class Book {
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       isRead: isRead ?? this.isRead,
+      coverUrl: coverUrl ?? this.coverUrl,
     );
   }
 }

@@ -5,6 +5,7 @@ class BookFormScreen extends StatefulWidget {
   required String title,
   required String author,
   String description,
+  String? coverUrl,
   }) onSave;
 
   const BookFormScreen({
@@ -21,12 +22,14 @@ class _BookFormScreenState extends State<BookFormScreen> {
   final _titleController = TextEditingController();
   final _authorController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _coverUrlController = TextEditingController();
 
   @override
   void dispose() {
     _titleController.dispose();
     _authorController.dispose();
     _descriptionController.dispose();
+    _coverUrlController.dispose();
     super.dispose();
   }
 
@@ -36,6 +39,9 @@ class _BookFormScreenState extends State<BookFormScreen> {
         title: _titleController.text.trim(),
         author: _authorController.text.trim(),
         description: _descriptionController.text.trim(),
+        coverUrl: _coverUrlController.text.trim().isEmpty
+            ? null
+            : _coverUrlController.text.trim(),
       );
     }
   }
@@ -116,6 +122,18 @@ class _BookFormScreenState extends State<BookFormScreen> {
               ),
               maxLines: 4,
               textCapitalization: TextCapitalization.sentences,
+            ),
+            const SizedBox(height: 20),
+
+            TextFormField(
+              controller: _coverUrlController,
+              decoration: const InputDecoration(
+                labelText: 'URL обложки (необязательно)',
+                hintText: 'https://example.com/cover.jpg',
+                prefixIcon: Icon(Icons.image, color: Colors.teal),
+                helperText: 'Введите ссылку на изображение обложки',
+              ),
+              keyboardType: TextInputType.url,
             ),
             const SizedBox(height: 32),
 
