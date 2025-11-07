@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'features/books_container.dart';
+import 'features/router/app_router.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyAppRouter());
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyAppRouter extends StatelessWidget {
+  const MyAppRouter({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Домашняя библиотека',
       debugShowCheckedModeBanner: false,
+      routerConfig: appRouter,
       theme: ThemeData(
         primarySwatch: Colors.teal,
         useMaterial3: true,
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const BooksContainer(),
     );
   }
 }

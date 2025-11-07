@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../book.dart';
 import '../widgets/book_cover.dart';
 
@@ -22,6 +23,11 @@ class BookListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Домашняя библиотека'),
         actions: [
+          IconButton(
+            tooltip: 'Горизонтальная демо',
+            icon: const Icon(Icons.view_carousel),
+            onPressed: () => context.push('/demo/horizontal'),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Center(
@@ -33,9 +39,7 @@ class BookListScreen extends StatelessWidget {
                 ),
                 child: Text(
                   '${books.length} книг',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -58,28 +62,15 @@ class BookListScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.menu_book_outlined,
-            size: 100,
-            color: Colors.grey.shade400,
-          ),
+          Icon(Icons.menu_book_outlined, size: 100, color: Colors.grey.shade400),
           const SizedBox(height: 24),
-          Text(
-            'Библиотека пуста',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey.shade600,
-            ),
-          ),
+          Text('Библиотека пуста',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.grey.shade600)),
           const SizedBox(height: 12),
           Text(
             'Нажмите кнопку ниже,\nчтобы добавить первую книгу',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -100,25 +91,14 @@ class BookListScreen extends StatelessWidget {
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: 20),
             margin: const EdgeInsets.only(bottom: 8),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(
-              Icons.delete_sweep,
-              color: Colors.white,
-              size: 36,
-            ),
+            decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(12)),
+            child: const Icon(Icons.delete_sweep, color: Colors.white, size: 36),
           ),
           child: Card(
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
               contentPadding: const EdgeInsets.all(16),
-              leading: BookCover(
-                coverUrl: book.coverUrl,
-                width: 56,
-                height: 80,
-              ),
+              leading: BookCover(coverUrl: book.coverUrl, width: 56, height: 80),
               title: Text(
                 book.title,
                 style: TextStyle(
@@ -132,24 +112,14 @@ class BookListScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 4),
-                  Text(
-                    '✍️ ${book.author}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
+                  Text('✍️ ${book.author}', style: TextStyle(fontSize: 14, color: Colors.grey.shade700)),
                   if (book.description.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
                       book.description,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade600,
-                        fontStyle: FontStyle.italic,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontStyle: FontStyle.italic),
                     ),
                   ],
                 ],
@@ -159,13 +129,9 @@ class BookListScreen extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () => onToggleBook(book.id),
-                    icon: Icon(
-                      book.isRead ? Icons.restart_alt : Icons.done,
-                    ),
+                    icon: Icon(book.isRead ? Icons.restart_alt : Icons.done),
                     color: Colors.teal,
-                    tooltip: book.isRead
-                        ? 'Отметить как непрочитанную'
-                        : 'Отметить как прочитанную',
+                    tooltip: book.isRead ? 'Отметить как непрочитанную' : 'Отметить как прочитанную',
                   ),
                   IconButton(
                     onPressed: () => onDeleteBook(book.id),

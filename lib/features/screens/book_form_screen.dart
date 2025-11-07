@@ -8,10 +8,7 @@ class BookFormScreen extends StatefulWidget {
   String? coverUrl,
   }) onSave;
 
-  const BookFormScreen({
-    Key? key,
-    required this.onSave,
-  }) : super(key: key);
+  const BookFormScreen({Key? key, required this.onSave}) : super(key: key);
 
   @override
   State<BookFormScreen> createState() => _BookFormScreenState();
@@ -39,9 +36,7 @@ class _BookFormScreenState extends State<BookFormScreen> {
         title: _titleController.text.trim(),
         author: _authorController.text.trim(),
         description: _descriptionController.text.trim(),
-        coverUrl: _coverUrlController.text.trim().isEmpty
-            ? null
-            : _coverUrlController.text.trim(),
+        coverUrl: _coverUrlController.text.trim().isEmpty ? null : _coverUrlController.text.trim(),
       );
     }
   }
@@ -65,19 +60,11 @@ class _BookFormScreenState extends State<BookFormScreen> {
               child: Container(
                 width: 100,
                 height: 100,
-                decoration: BoxDecoration(
-                  color: Colors.teal.shade50,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.book,
-                  size: 50,
-                  color: Colors.teal.shade700,
-                ),
+                decoration: BoxDecoration(color: Colors.teal.shade50, shape: BoxShape.circle),
+                child: Icon(Icons.book, size: 50, color: Colors.teal.shade700),
               ),
             ),
             const SizedBox(height: 32),
-
             TextFormField(
               controller: _titleController,
               decoration: const InputDecoration(
@@ -85,16 +72,10 @@ class _BookFormScreenState extends State<BookFormScreen> {
                 hintText: 'Например: Война и мир',
                 prefixIcon: Icon(Icons.book, color: Colors.teal),
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Пожалуйста, введите название книги';
-                }
-                return null;
-              },
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Пожалуйста, введите название книги' : null,
               textCapitalization: TextCapitalization.words,
             ),
             const SizedBox(height: 20),
-
             TextFormField(
               controller: _authorController,
               decoration: const InputDecoration(
@@ -102,16 +83,10 @@ class _BookFormScreenState extends State<BookFormScreen> {
                 hintText: 'Например: Лев Толстой',
                 prefixIcon: Icon(Icons.person, color: Colors.teal),
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Пожалуйста, введите автора книги';
-                }
-                return null;
-              },
+              validator: (v) => (v == null || v.trim().isEmpty) ? 'Пожалуйста, введите автора книги' : null,
               textCapitalization: TextCapitalization.words,
             ),
             const SizedBox(height: 20),
-
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
@@ -124,7 +99,6 @@ class _BookFormScreenState extends State<BookFormScreen> {
               textCapitalization: TextCapitalization.sentences,
             ),
             const SizedBox(height: 20),
-
             TextFormField(
               controller: _coverUrlController,
               decoration: const InputDecoration(
@@ -136,29 +110,18 @@ class _BookFormScreenState extends State<BookFormScreen> {
               keyboardType: TextInputType.url,
             ),
             const SizedBox(height: 32),
-
             ElevatedButton.icon(
               onPressed: _submit,
               icon: const Icon(Icons.check),
-              label: const Text(
-                'Сохранить книгу',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-              ),
+              label: const Text('Сохранить книгу', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 20)),
             ),
             const SizedBox(height: 16),
-
             OutlinedButton.icon(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(), // Рисунок 9 — страничный pop
               icon: const Icon(Icons.close),
               label: const Text('Отменить'),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
+              style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
             ),
           ],
         ),

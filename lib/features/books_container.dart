@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:untitled1/features/screens/book_added_screen.dart';
+import 'package:untitled1/features/screens/book_form_screen.dart';
+import 'package:untitled1/features/screens/book_list_screen.dart';
 import 'book.dart';
-import 'screens/book_list_screen.dart';
-import 'screens/book_form_screen.dart';
-
-enum Screen { list, form }
 
 class BooksContainer extends StatefulWidget {
   const BooksContainer({Key? key}) : super(key: key);
@@ -14,57 +13,59 @@ class BooksContainer extends StatefulWidget {
 
 class _BooksContainerState extends State<BooksContainer> {
   final List<Book> _books = [];
-  Screen _currentScreen = Screen.list;
-
   Book? _lastDeletedBook;
   int? _lastDeletedIndex;
 
-  void _showForm() {
-    setState(() {
-      _currentScreen = Screen.form;
-    });
-  }
+  // ADDED: открытие формы как нового маршрута (вертикальная навигация push)
+  void _openAddForm() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (formCtx) => BookFormScreen(
+          onSave: ({
+            required String title,
+            required String author,
+            String description = "",
+            String? coverUrl,
+          }) {
+            final newBook = Book(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              title: title,
+              author: author,
+              description: description,
+              createdAt: DateTime.now(),
+              isRead: false,
+              coverUrl: coverUrl,
+            );
 
-  void _createBook({
-    required String title,
-    required String author,
-    String description = "",
-    String? coverUrl,
-  }) {
-    final newBook = Book(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
-      author: author,
-      description: description,
-      createdAt: DateTime.now(),
-      isRead: false,
-      coverUrl: coverUrl,
-    );
-
-    setState(() {
-      _books.add(newBook);
-      _currentScreen = Screen.list;
-    });
-
-    _showSnackBar(
-      'Книга "${title}" успешно добавлена',
-      Colors.green,
+            setState(() {
+              _books.add(newBook);
+            });
+            Navigator.pushReplacement(
+              formCtx,
+              MaterialPageRoute(
+                builder: (_) => BookAddedScreen(
+                  title: title,
+                  onGoToList: () => Navigator.pop(formCtx),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
   void _toggleBook(String id) {
+    final index = _books.indexWhere((b) => b.id == id);
+    if (index == -1) return;
     setState(() {
-      final index = _books.indexWhere((book) => book.id == id);
-      if (index != -1) {
-        _books[index] = _books[index].copyWith(
-          isRead: !_books[index].isRead,
-        );
-      }
+      _books[index] = _books[index].copyWith(isRead: !_books[index].isRead);
     });
   }
 
   void _deleteBook(String id) {
-    final index = _books.indexWhere((book) => book.id == id);
+    final index = _books.indexWhere((b) => b.id == id);
     if (index == -1) return;
 
     setState(() {
@@ -95,55 +96,23 @@ class _BooksContainerState extends State<BooksContainer> {
         _lastDeletedIndex = null;
       });
 
-      _showSnackBar('Книга восстановлена', Colors.teal);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Книга восстановлена'),
+          backgroundColor: Colors.teal,
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
-  }
-
-  void _showSnackBar(String message, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: color,
-        duration: const Duration(seconds: 2),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget body;
-
-    switch (_currentScreen) {
-      case Screen.list:
-        body = BookListScreen(
-          books: _books,
-          onAddBook: _showForm,
-          onToggleBook: _toggleBook,
-          onDeleteBook: _deleteBook,
-        );
-        break;
-      case Screen.form:
-        body = BookFormScreen(
-          onSave: ({
-            required String title,
-            required String author,
-            String description = "",
-            String? coverUrl,
-          }) {
-            _createBook(
-              title: title,
-              author: author,
-              description: description,
-              coverUrl: coverUrl,
-            );
-          },
-        );
-        break;
-    }
-
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      child: body,
+    return BookListScreen(
+      books: _books,
+      onAddBook: _openAddForm,
+      onToggleBook: _toggleBook,
+      onDeleteBook: _deleteBook,
     );
   }
 }
