@@ -45,9 +45,9 @@ class _DemoHorizontalScreenState extends State<DemoHorizontalScreen> {
               controller: _controller,
               onPageChanged: (i) => setState(() => _page = i),
               children: const [
-                _DemoPage(title: 'Страница 1', hint: 'Свайп влево →'), // Рисунок 17
-                _DemoPage(title: 'Страница 2', hint: '← или →'),       // Рисунок 18
-                _DemoPage(title: 'Страница 3', hint: '← свайп назад'), // Рисунок 19
+                _DemoPage(title: 'Страница 1', hint: 'Свайп влево →'),
+                _DemoPage(title: 'Страница 2', hint: '← или →'),
+                _DemoPage(title: 'Страница 3', hint: '← свайп назад'),
               ],
             ),
           ),

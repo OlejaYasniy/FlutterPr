@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_it/get_it.dart';
 import '../book.dart';
 import '../screens/book_list_screen.dart';
 import '../screens/book_form_screen.dart';
@@ -58,47 +59,81 @@ class BooksStore {
     }
   }
 }
+void setupDI() {
+  final getIt = GetIt.I;
+  if (!getIt.isRegistered<BooksStore>()) {
+    getIt.registerSingleton<BooksStore>(BooksStore.I);
+  }
+}
+
+class BooksStoreProvider extends InheritedWidget {
+  final BooksStore store;
+
+  const BooksStoreProvider({
+    Key? key,
+    required this.store,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  static BooksStore of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<BooksStoreProvider>()!
+        .store;
+  }
+
+  @override
+  bool updateShouldNotify(BooksStoreProvider oldWidget) =>
+      store != oldWidget.store;
+}
 
 final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => BookListScreen(
-        books: BooksStore.I.books,
-        onAddBook: () => context.push('/books/new'),
-        onToggleBook: (id) {
-          BooksStore.I.toggle(id);
-          (context as Element).markNeedsBuild();
-        },
-        onDeleteBook: (id) {
-          BooksStore.I.delete(context, id);
-          (context as Element).markNeedsBuild();
-        },
-      ),
+      builder: (context, state) {
+        // использование InheritedWidget
+        final store = BooksStoreProvider.of(context);
+        return BookListScreen(
+          books: store.books,
+          onAddBook: () => context.push('/books/new'),
+          onToggleBook: (id) {
+            store.toggle(id);
+            (context as Element).markNeedsBuild();
+          },
+          onDeleteBook: (id) {
+            store.delete(context, id);
+            (context as Element).markNeedsBuild();
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/books/new',
-      builder: (context, state) => BookFormScreen(
-        onSave: ({
-          required String title,
-          required String author,
-          String description = "",
-          String? coverUrl,
-        }) {
-          final newBook = Book(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            title: title,
-            author: author,
-            description: description,
-            createdAt: DateTime.now(),
-            isRead: false,
-            coverUrl: coverUrl,
-          );
-          BooksStore.I.add(newBook);
-          // Рисунок 6 — горизонтальная замена текущего маршрута
-          context.replace('/books/added?title=${Uri.encodeComponent(title)}');
-        },
-      ),
+      builder: (context, state) {
+        final store = BooksStoreProvider.of(context);
+        return BookFormScreen(
+          onSave: ({
+            required String title,
+            required String author,
+            String description = "",
+            String? coverUrl,
+          }) {
+            final newBook = Book(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              title: title,
+              author: author,
+              description: description,
+              createdAt: DateTime.now(),
+              isRead: false,
+              coverUrl: coverUrl,
+            );
+            store.add(newBook);
+            context.replace(
+              '/books/added?title=${Uri.encodeComponent(title)}',
+            );
+          },
+        );
+      },
     ),
     GoRoute(
       path: '/books/added',
@@ -106,7 +141,7 @@ final GoRouter appRouter = GoRouter(
         final title = state.uri.queryParameters['title'] ?? '';
         return BookAddedScreen(
           title: title,
-          onGoToList: () => context.go('/'), // сброс ветки к корню
+          onGoToList: () => context.go('/'),
         );
       },
     ),

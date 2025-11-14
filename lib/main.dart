@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
-import 'features/router/app_router.dart';
 
-void main() => runApp(const MyAppRouter());
+import 'features/router/app_router.dart';
+import 'features/router/app_router.dart' show BooksStoreProvider, setupDI, BooksStore;
+
+void main() {
+  setupDI();
+  runApp(
+    BooksStoreProvider(
+      store: BooksStore.I,
+      child: const MyAppRouter(),
+    ),
+  );
+}
 
 class MyAppRouter extends StatelessWidget {
   const MyAppRouter({Key? key}) : super(key: key);
