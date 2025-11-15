@@ -7,11 +7,11 @@ class Book {
   final bool isRead;
   final String? coverUrl;
 
-  Book({
+  const Book({
     required this.id,
     required this.title,
     required this.author,
-    this.description = "",
+    this.description = '',
     required this.createdAt,
     this.isRead = false,
     this.coverUrl,

@@ -7,11 +7,11 @@ class BookCover extends StatelessWidget {
   final double height;
 
   const BookCover({
-    Key? key,
+    super.key,
     this.coverUrl,
     this.width = 56,
     this.height = 80,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +42,10 @@ class BookCover extends StatelessWidget {
           ),
         ),
       ),
-
       errorWidget: (context, url, error) => _buildPlaceholder(
         color: Colors.red[100],
         iconColor: Colors.red[700],
       ),
-
       imageBuilder: (context, imageProvider) => Container(
         width: width,
         height: height,

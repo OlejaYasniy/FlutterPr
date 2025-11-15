@@ -5,10 +5,10 @@ class BookAddedScreen extends StatelessWidget {
   final VoidCallback onGoToList;
 
   const BookAddedScreen({
-    Key? key,
+    super.key,
     required this.title,
     required this.onGoToList,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +22,14 @@ class BookAddedScreen extends StatelessWidget {
             children: [
               const Icon(Icons.check_circle, color: Colors.teal, size: 72),
               const SizedBox(height: 16),
-              Text('«$title» добавлена в библиотеку', textAlign: TextAlign.center, style: const TextStyle(fontSize: 18)),
+              Text(
+                '«$title» добавлена в библиотеку',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18),
+              ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
-                onPressed: onGoToList, // Рисунок 20 — возврат на корень
+                onPressed: onGoToList,
                 icon: const Icon(Icons.library_books),
                 label: const Text('Вернуться к списку'),
               ),

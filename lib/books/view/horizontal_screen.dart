@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DemoHorizontalScreen extends StatefulWidget {
-  const DemoHorizontalScreen({Key? key}) : super(key: key);
+  const DemoHorizontalScreen({super.key});
 
   @override
   State<DemoHorizontalScreen> createState() => _DemoHorizontalScreenState();
@@ -60,6 +60,7 @@ class _DemoHorizontalScreenState extends State<DemoHorizontalScreen> {
 class _DemoPage extends StatelessWidget {
   final String title;
   final String hint;
+
   const _DemoPage({required this.title, required this.hint});
 
   @override
@@ -68,7 +69,10 @@ class _DemoPage extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 8),
           Text(hint, style: TextStyle(color: Colors.grey.shade700)),
         ],
