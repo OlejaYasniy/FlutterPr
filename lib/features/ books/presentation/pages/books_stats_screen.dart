@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/books_cubit.dart';
-import '../domain/book.dart';
+import '../../domain/book.dart';
+import '../cubit/books_cubit.dart';
 
 class BooksStatsScreen extends StatelessWidget {
   const BooksStatsScreen({super.key});

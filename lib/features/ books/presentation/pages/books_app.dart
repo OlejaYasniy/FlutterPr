@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../bloc/books_cubit.dart';
+import '../../data/in_memory_books_repository.dart';
+import '../../domain/books_repository.dart';
+import '../cubit/books_cubit.dart';
 import 'book_list_screen.dart';
 import 'book_form_screen.dart';
 import 'book_added_screen.dart';
@@ -61,21 +62,23 @@ class BooksApp extends StatelessWidget {
         ),
       ],
     );
-
-    return BlocProvider(
-      create: (_) => BooksCubit(),
-      child: MaterialApp.router(
-        title: 'Домашняя библиотека',
-        debugShowCheckedModeBanner: false,
-        routerConfig: router,
-        theme: ThemeData(
-          primarySwatch: Colors.teal,
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.teal,
-            foregroundColor: Colors.white,
-            centerTitle: true,
-            elevation: 2,
+    return RepositoryProvider<BooksRepository>(
+      create: (_) => InMemoryBooksRepository(),
+      child: BlocProvider(
+        create: (context) => BooksCubit(context.read<BooksRepository>()),
+        child: MaterialApp.router(
+          title: 'Домашняя библиотека',
+          debugShowCheckedModeBanner: false,
+          routerConfig: router,
+          theme: ThemeData(
+            primarySwatch: Colors.teal,
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.teal,
+              foregroundColor: Colors.white,
+              centerTitle: true,
+              elevation: 2,
+            ),
           ),
         ),
       ),

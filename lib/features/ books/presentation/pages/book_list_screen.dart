@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import '../bloc/books_cubit.dart';
-import '../domain/book.dart';
-import 'widgets/book_cover.dart';
+import '../../domain/book.dart';
+import '../cubit/books_cubit.dart';
+import '../widgets/book_cover.dart';
+
 
 class BookListScreen extends StatelessWidget {
   const BookListScreen({super.key});

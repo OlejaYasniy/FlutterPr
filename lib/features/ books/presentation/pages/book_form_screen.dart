@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import '../bloc/books_cubit.dart';
-import '../domain/book.dart';
+import '../../domain/book.dart';
+import '../cubit/books_cubit.dart';
 
 class BookFormScreen extends StatefulWidget {
   const BookFormScreen({super.key});
