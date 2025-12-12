@@ -15,6 +15,16 @@ class BookListScreen extends StatelessWidget {
         title: const Text('Домашняя библиотека'),
         actions: [
           IconButton(
+            tooltip: 'Статистика',
+            icon: const Icon(Icons.bar_chart),
+            onPressed: () => context.push('/books/stats'),
+          ),
+          IconButton(
+            tooltip: 'Настройки',
+            icon: const Icon(Icons.settings),
+            onPressed: () => context.push('/settings'),
+          ),
+          IconButton(
             tooltip: 'Горизонтальная демо',
             icon: const Icon(Icons.view_carousel),
             onPressed: () => context.push('/demo/horizontal'),
@@ -120,6 +130,7 @@ class BookListScreen extends StatelessWidget {
           child: Card(
             margin: const EdgeInsets.only(bottom: 8),
             child: ListTile(
+              onTap: () => context.push('/books/${book.id}'),
               contentPadding: const EdgeInsets.all(16),
               leading: BookCover(
                 coverUrl: book.coverUrl,

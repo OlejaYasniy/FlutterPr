@@ -6,8 +6,10 @@ import '../bloc/books_cubit.dart';
 import 'book_list_screen.dart';
 import 'book_form_screen.dart';
 import 'book_added_screen.dart';
-import 'horizontal_screen.dart';
-import '../domain/book.dart';
+import 'book_details_screen.dart';
+import 'book_edit_screen.dart';
+import 'books_stats_screen.dart';
+import 'books_settings_screen.dart';
 
 class BooksApp extends StatelessWidget {
   const BooksApp({super.key});
@@ -20,6 +22,7 @@ class BooksApp extends StatelessWidget {
           path: '/',
           builder: (context, state) => const BookListScreen(),
         ),
+
         GoRoute(
           path: '/books/new',
           builder: (context, state) => const BookFormScreen(),
@@ -35,8 +38,26 @@ class BooksApp extends StatelessWidget {
           },
         ),
         GoRoute(
-          path: '/demo/horizontal',
-          builder: (context, state) => const DemoHorizontalScreen(),
+          path: '/books/stats',
+          builder: (context, state) => const BooksStatsScreen(),
+        ),
+
+        // НЕ /books, тоже статический
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) => const BooksSettingsScreen(),
+        ),
+
+        // ДИНАМИЧЕСКИЕ — в конце
+        GoRoute(
+          path: '/books/:id/edit',
+          builder: (context, state) =>
+              BookEditScreen(id: state.pathParameters['id']!),
+        ),
+        GoRoute(
+          path: '/books/:id',
+          builder: (context, state) =>
+              BookDetailsScreen(id: state.pathParameters['id']!),
         ),
       ],
     );
@@ -55,27 +76,6 @@ class BooksApp extends StatelessWidget {
             foregroundColor: Colors.white,
             centerTitle: true,
             elevation: 2,
-          ),
-          cardTheme: CardThemeData(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
           ),
         ),
       ),

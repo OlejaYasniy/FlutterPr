@@ -47,4 +47,16 @@ class BooksCubit extends Cubit<List<Book>> {
       ),
     );
   }
+  void updateBook(Book updated) {
+    final idx = state.indexWhere((b) => b.id == updated.id);
+    if (idx == -1) return;
+    final list = [...state];
+    list[idx] = updated;
+    emit(list);
+  }
+
+  Book? getById(String id) {
+    final idx = state.indexWhere((b) => b.id == id);
+    return idx == -1 ? null : state[idx];
+  }
 }
