@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../data/in_memory_books_repository.dart';
+import '../../data/remote/gutendex_client.dart';
+import '../../data/remote/open_library_books_client.dart';
+import '../../data/remote/open_library_client.dart';
 import '../../data/settings_repository_impl.dart';
 import '../../data/shared_prefs_data_source.dart';
 import '../../domain/books_repository.dart';
@@ -23,8 +26,6 @@ import 'book_edit_screen.dart';
 import 'books_stats_screen.dart';
 import 'books_settings_screen.dart';
 import 'package:dio/dio.dart';
-import '../../data/remote/open_library_api.dart';
-import '../../data/remote/gutendex_api.dart';
 import '../../data/online_books_repository_impl.dart';
 import 'online_search_screen.dart';
 
@@ -81,20 +82,32 @@ class BooksApp extends StatelessWidget {
         RepositoryProvider<AuthTokensRepository>(
           create: (_) => AuthTokensRepositoryImpl(SecureStorageDataSource()),
         ),
-        RepositoryProvider<OnlineBooksRepository>(
-          create: (_) {
-            final dio = Dio(
-              BaseOptions(
-                connectTimeout: const Duration(seconds: 10),
-                receiveTimeout: const Duration(seconds: 15),
-              ),
-            );
+        RepositoryProvider<Dio>(
+          create: (_) => Dio(
+            BaseOptions(
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 15),
+              headers: {'Accept': 'application/json'},
+            ),
+          ),
+        ),
 
-            return OnlineBooksRepositoryImpl(
-              openLibrary: OpenLibraryApi(dio),
-              gutendex: GutendexApi(dio),
-            );
-          },
+        RepositoryProvider<OpenLibraryClient>(
+          create: (context) => OpenLibraryClient(context.read<Dio>()),
+        ),
+        RepositoryProvider<OpenLibraryBooksClient>(
+          create: (context) => OpenLibraryBooksClient(context.read<Dio>()),
+        ),
+        RepositoryProvider<GutendexClient>(
+          create: (context) => GutendexClient(context.read<Dio>()),
+        ),
+
+        RepositoryProvider<OnlineBooksRepository>(
+          create: (context) => OnlineBooksRepositoryImpl(
+            openLibrary: context.read<OpenLibraryClient>(),
+            openLibraryBooks: context.read<OpenLibraryBooksClient>(),
+            gutendex: context.read<GutendexClient>(),
+          ),
         ),
 
       ],

@@ -1,21 +1,27 @@
 import '../domain/online_book.dart';
 import '../domain/online_books_repository.dart';
-import 'remote/gutendex_api.dart';
-import 'remote/open_library_api.dart';
+import 'remote/open_library_client.dart';
+import 'remote/open_library_books_client.dart';
+import 'remote/gutendex_client.dart';
 
 class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
   OnlineBooksRepositoryImpl({
-    required OpenLibraryApi openLibrary,
-    required GutendexApi gutendex,
+    required OpenLibraryClient openLibrary,
+    required OpenLibraryBooksClient openLibraryBooks,
+    required GutendexClient gutendex,
   })  : _ol = openLibrary,
+        _olBooks = openLibraryBooks,
         _gut = gutendex;
 
-  final OpenLibraryApi _ol;
-  final GutendexApi _gut;
+  final OpenLibraryClient _ol;
+  final OpenLibraryBooksClient _olBooks;
+  final GutendexClient _gut;
 
   @override
   Future<List<OnlineBook>> searchOpenLibrary(String query) async {
-    final json = await _ol.search(query);
+    final raw = await _ol.search(query);
+    final json = _asMap(raw);
+
     final docs = (json['docs'] as List?) ?? const [];
 
     return docs.take(20).map((e) {
@@ -35,9 +41,7 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
       final isbn = isbns.isNotEmpty ? isbns.first : null;
 
       final coverI = m['cover_i'];
-      final coverUrl = (coverI is num || coverI is int || coverI is String)
-          ? 'https://covers.openlibrary.org/b/id/$coverI-L.jpg'
-          : null;
+      final coverUrl = coverI != null ? 'https://covers.openlibrary.org/b/id/$coverI-L.jpg' : null;
 
       return OnlineBook(
         source: OnlineSource.openLibrary,
@@ -52,7 +56,9 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
 
   @override
   Future<OnlineBook?> openLibraryByIsbn(String isbn) async {
-    final json = await _ol.byIsbn(isbn);
+    final raw = await _olBooks.byIsbn('ISBN:$isbn', 'json', 'data');
+    final json = _asMap(raw);
+
     final key = 'ISBN:$isbn';
     final data = json[key];
     if (data == null) return null;
@@ -71,7 +77,6 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
     final cover = _asMap(m['cover']);
     final coverUrl = _str(cover['large']) ?? _str(cover['medium']) ?? _str(cover['small']);
 
-    // В Books API description может быть по-разному представлен; берём самое простое.
     final subtitle = _str(m['subtitle']);
 
     return OnlineBook(
@@ -86,7 +91,10 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
 
   @override
   Future<OnlineBook?> openLibraryEditionDetails(String editionKey) async {
-    final m = await _ol.editionDetails(editionKey);
+    final path = editionKey.startsWith('/books/') ? editionKey : '/books/$editionKey';
+
+    final raw = await _olBooks.editionDetails('$path.json');
+    final m = _asMap(raw);
 
     final title = _str(m['title']) ?? 'Без названия';
 
@@ -95,7 +103,6 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
     if (rawDesc is String) description = rawDesc;
     if (rawDesc is Map && rawDesc['value'] != null) description = rawDesc['value'].toString();
 
-    // Без доп. запроса к /authors/<id>.json имена авторов обычно не получить корректно.
     final author = '—';
 
     return OnlineBook(
@@ -109,7 +116,9 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
 
   @override
   Future<List<OnlineBook>> searchGutendex(String query) async {
-    final json = await _gut.search(query);
+    final raw = await _gut.search(query);
+    final json = _asMap(raw);
+
     final results = (json['results'] as List?) ?? const [];
 
     return results.take(20).map((e) {
@@ -140,7 +149,8 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
 
   @override
   Future<OnlineBook?> gutendexDetails(int id) async {
-    final m = await _gut.details(id);
+    final raw = await _gut.details(id);
+    final m = _asMap(raw);
 
     final title = _str(m['title']) ?? 'Без названия';
 
@@ -189,7 +199,6 @@ class OnlineBooksRepositoryImpl implements OnlineBooksRepository {
       gutendexId: id,
     );
   }
-
   static Map<String, dynamic> _asMap(dynamic v) {
     if (v is Map<String, dynamic>) return v;
     if (v is Map) return v.map((k, val) => MapEntry(k.toString(), val));

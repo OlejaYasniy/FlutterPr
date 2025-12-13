@@ -34,7 +34,6 @@ class OnlineSearchCubit extends Cubit<OnlineSearchState> {
     if (query.trim().isEmpty) return;
     emit(const OnlineSearchLoading());
     try {
-      // 2 запроса сразу: OpenLibrary + Gutendex
       final ol = await _repo.searchOpenLibrary(query);
       final gut = await _repo.searchGutendex(query);
       emit(OnlineSearchLoaded(openLibrary: ol, gutendex: gut));
@@ -42,13 +41,8 @@ class OnlineSearchCubit extends Cubit<OnlineSearchState> {
       emit(OnlineSearchError(e.toString()));
     }
   }
-
-  // OpenLibrary ISBN (3-й запрос)
   Future<OnlineBook?> loadOpenLibraryByIsbn(String isbn) => _repo.openLibraryByIsbn(isbn);
-
-  // OpenLibrary edition details (4-й запрос)
   Future<OnlineBook?> loadOpenLibraryEdition(String editionKey) => _repo.openLibraryEditionDetails(editionKey);
 
-  // Gutendex details (5-й запрос)
   Future<OnlineBook?> loadGutendexDetails(int id) => _repo.gutendexDetails(id);
 }

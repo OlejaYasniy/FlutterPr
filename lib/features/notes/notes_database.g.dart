@@ -1,5 +1,8 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
 part of 'notes_database.dart';
 
+// ignore_for_file: type=lint
 class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
   @override
   final GeneratedDatabase attachedDatabase;
