@@ -17,4 +17,5 @@ class GutendexApi {
     final r = await _dio.get('https://gutendex.com/books/$id');
     return (r.data as Map).cast<String, dynamic>();
   }
+
 }
