@@ -6,8 +6,10 @@ import '../../data/settings_repository_impl.dart';
 import '../../data/shared_prefs_data_source.dart';
 import '../../domain/books_repository.dart';
 import '../../domain/app_theme_mode.dart';
+import '../../domain/online_books_repository.dart';
 import '../../domain/settings_repository.dart';
 import '../cubit/books_cubit.dart';
+import '../cubit/online_search_cubit.dart';
 import '../cubit/theme_cubit.dart';
 import '../../data/auth_tokens_repository_impl.dart';
 import '../../data/secure_storage_data_source.dart';
@@ -20,6 +22,12 @@ import 'book_details_screen.dart';
 import 'book_edit_screen.dart';
 import 'books_stats_screen.dart';
 import 'books_settings_screen.dart';
+import 'package:dio/dio.dart';
+import '../../data/remote/open_library_api.dart';
+import '../../data/remote/gutendex_api.dart';
+import '../../data/online_books_repository_impl.dart';
+import 'online_search_screen.dart';
+
 
 class BooksApp extends StatelessWidget {
   const BooksApp({super.key});
@@ -53,6 +61,14 @@ class BooksApp extends StatelessWidget {
           path: '/books/:id',
           builder: (context, state) => BookDetailsScreen(id: state.pathParameters['id']!),
         ),
+        GoRoute(
+          path: '/online',
+          builder: (context, state) => BlocProvider(
+            create: (_) => OnlineSearchCubit(context.read()),
+            child: const OnlineSearchScreen(),
+          ),
+        ),
+
       ],
     );
 
@@ -65,6 +81,22 @@ class BooksApp extends StatelessWidget {
         RepositoryProvider<AuthTokensRepository>(
           create: (_) => AuthTokensRepositoryImpl(SecureStorageDataSource()),
         ),
+        RepositoryProvider<OnlineBooksRepository>(
+          create: (_) {
+            final dio = Dio(
+              BaseOptions(
+                connectTimeout: const Duration(seconds: 10),
+                receiveTimeout: const Duration(seconds: 15),
+              ),
+            );
+
+            return OnlineBooksRepositoryImpl(
+              openLibrary: OpenLibraryApi(dio),
+              gutendex: GutendexApi(dio),
+            );
+          },
+        ),
+
       ],
       child: MultiBlocProvider(
         providers: [

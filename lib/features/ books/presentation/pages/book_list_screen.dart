@@ -26,9 +26,9 @@ class BookListScreen extends StatelessWidget {
             onPressed: () => context.push('/settings'),
           ),
           IconButton(
-            tooltip: 'Горизонтальная демо',
-            icon: const Icon(Icons.view_carousel),
-            onPressed: () => context.push('/demo/horizontal'),
+            tooltip: 'Онлайн-поиск',
+            icon: const Icon(Icons.public),
+            onPressed: () => context.push('/online'),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 16),
